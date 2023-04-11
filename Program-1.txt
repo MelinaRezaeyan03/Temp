@@ -1,0 +1,162 @@
+#include <iostream>
+using namespace std;
+
+class Queue {
+private:
+    int queue[100];
+    int front, rear, capacity;
+
+public:
+    Queue() {
+        front = rear = -1;
+        capacity = 100;
+    }
+
+    void push(int value) {
+        if (isfull()) {
+            cout << "Queue is full" << endl;
+            return;
+        }
+
+        if (isempty()) {
+            front = rear = 0;
+        }
+        else {
+            rear = (rear + 1) % capacity;
+        }
+
+        queue[rear] = value;
+    }
+
+    int pop() {
+        if (isempty()) {
+            cout << "Queue is empty" << endl;
+            return -1;
+        }
+
+        int value = queue[front];
+
+        if (front == rear) {
+            front = rear = -1;
+        }
+        else {
+            front = (front + 1) % capacity;
+        }
+
+        return value;
+    }
+
+    int size() {
+        if (isempty()) {
+            return 0;
+        }
+
+        if (front <= rear) {
+            return rear - front + 1;
+        }
+        else {
+            return capacity - front + rear + 1;
+        }
+    }
+
+    void reverse() {
+        int start = front;
+        int end = rear;
+
+        while (start < end) {
+            int temp = queue[start];
+            queue[start] = queue[end];
+            queue[end] = temp;
+            start = (start + 1) % capacity;
+            end = (end - 1 + capacity) % capacity;
+        }
+    }
+
+    int find(int value) {
+        if (isempty()) {
+            return -1;
+        }
+
+        int i = front;
+
+        while (i != rear) {
+            if (queue[i] == value) {
+                return value;
+            }
+
+            i = (i + 1) % capacity;
+        }
+
+        if (queue[rear] == value) {
+            return value;
+        }
+
+        return -1;
+    }
+
+    bool isfull() {
+        return (rear + 1) % capacity == front;
+    }
+
+    bool isempty() {
+        return front == -1;
+    }
+};
+
+
+int main()
+{
+    Queue my_queue;
+
+    // سناریوی تست 1: اضافه کردن مقادیر به صف و استخراج آن‌ها به ترتیبی که وارد شده‌اند
+    my_queue.push(10);
+    my_queue.push(20);
+    my_queue.push(30);
+    my_queue.push(40);
+    my_queue.push(50);
+    cout << my_queue.pop() << endl; // خروجی: 10
+    cout << my_queue.pop() << endl; // خروجی: 20
+    cout << my_queue.pop() << endl; // خروجی: 30
+    cout << my_queue.pop() << endl; // خروجی: 40
+    cout << my_queue.pop() << endl; // خروجی: 50
+
+    // سناریوی تست 2: بررسی عملکرد توابع size و isempty برای صف خالی
+    cout << my_queue.size() << endl; // خروجی: 0
+    cout << my_queue.isempty() << endl; // خروجی: 1
+
+    // سناریوی تست 3: اضافه کردن مقدار به صف و بررسی عملکرد توابع isfull و push
+    for (int i = 0; i < 100; i++) {
+        my_queue.push(i);
+    }
+    cout << my_queue.isfull() << endl; // خروجی: 1
+    my_queue.push(200); // عملیات push نباید به دلیل پر شدن صف امکان‌پذیر باشد
+
+    // سناریوی تست 4: برعکس کردن مقادیر در صف و بررسی عملکرد تابع reverse
+    my_queue.reverse();
+    cout << my_queue.pop() << endl; // خروجی: 99
+    cout << my_queue.pop() << endl; // خروجی: 98
+    cout << my_queue.pop() << endl; // خروجی: 97
+
+    // سناریوی تست 5: بررسی عملکرد تابع find برای یافتن مقداری که در صف موجود است و یک مقدار که در صف موجود نیست
+    cout << my_queue.find(50) << endl; // خروجی: -1 (50 در صف نیست)
+    cout << my_queue.find(99) << endl; // خروجی: 99 (99 در صف است)
+
+    // تست کردن عملکرد تابع isfull و isempty:
+
+    Queue q;
+    for (int i = 0; i < 100; i++) {
+        q.push(i);
+    }
+    cout << q.isfull() << endl; // باید 1 برگردانده شود
+    q.pop();
+    cout << q.isfull() << endl; // باید 0 برگردانده شود
+    cout << q.isempty() << endl; // باید 0 برگردانده شود
+    for (int i = 0; i < 99; i++) {
+        q.pop();
+    }
+    cout << q.isempty() << endl; // باید 0 برگردانده شود
+    q.pop();
+    cout << q.isempty() << endl; // باید 1 برگردانده شود
+
+    return 0;
+}

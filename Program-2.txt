@@ -1,0 +1,108 @@
+﻿#include <iostream>
+
+/*
+توضیحات:
+
+در این کد، کلاس Node شامل یک عدد صحیح به نام item و یک اشاره‌گر به نود بعدی با نام next است.
+در تابع سازنده، item برابر با مقداری است که به آن پاس داده می‌شود و next برابر با nullptr قرار داده می‌شود.
+تابع Insertion یک مقدار صحیح دریافت می‌کند و یک نود با مقدار مورد نظر را در ابتدای لیست اضافه می‌کند.
+تابع Deletion یک نود از ابتدای لیست حذف می‌کند.
+تابع Display تمامی عناصر لیست را به ترتیب نمایش می‌دهد.
+تابع Search یک مقدار صحیح دریافت می‌کند و اگر در لیست وجود داشت، اندیس آن را بازگردانده و در غیر این صورت -1 را بازگردانده می‌کند.
+تابع Delete یک مقدار صحیح دریافت می‌کند و نودی که مقدار مورد نظر را دارد را از لیست حذف می‌کند
+*/
+class Node {
+private:
+    int item;
+    Node* next;
+
+public:
+    Node() {
+    }
+
+    void Insertion(int val) {
+        Node* newNode = new Node();
+        newNode->item = val;
+        newNode->next = next;
+        next = newNode;
+    }
+    void Deletion() {
+        if (next == nullptr) {
+            std::cout << "List is empty." << std::endl;
+            return;
+        }
+        Node* temp = next;
+        next = next->next;
+        delete temp;
+    }
+    void Display() {
+        Node* curr = next;
+        while (curr != nullptr) {
+            std::cout << curr->item << " ";
+            curr = curr->next;
+        }
+        std::cout << std::endl;
+    }
+    int Search(int val) {
+        Node* curr = next;
+        int index = 1;
+        while (curr != nullptr) {
+            if (curr->item == val) {
+                return index;
+            }
+            curr = curr->next;
+            index++;
+        }
+        return -1;
+    }
+    void Delete(int val) {
+        Node* prev = this;
+        Node* curr = next;
+        while (curr != nullptr) {
+            if (curr->item == val) {
+                prev->next = curr->next;
+                delete curr;
+                return;
+            }
+            prev = curr;
+            curr = curr->next;
+        }
+    }
+};
+
+int main() {
+    Node my_list;
+
+    // insert some values and display the list
+    my_list.Insertion(5);
+    my_list.Insertion(10);
+    my_list.Insertion(15);
+    my_list.Insertion(20);
+    my_list.Display(); // should print: 5 10 15 20
+
+    // delete the first item and display the list
+    my_list.Deletion();
+    my_list.Display(); // should print: 10 15 20
+
+    // search for a value that exists in the list
+    int search_val = 15;
+    int search_result = my_list.Search(search_val);
+    std::cout << search_result << std::endl; // should print: 1 (true)
+
+    // search for a value that does not exist in the list
+    int missing_val = 30;
+    int missing_result = my_list.Search(missing_val);
+    std::cout << missing_result << std::endl; // should print: 0 (false)
+
+    // delete a value that exists in the list
+    int delete_val = 10;
+    my_list.Delete(delete_val);
+    my_list.Display(); // should print: 15 20
+
+    // delete a value that does not exist in the list
+    int missing_delete_val = 25;
+    my_list.Delete(missing_delete_val);
+    my_list.Display(); // should print: 15 20
+
+    return 0;
+}
